@@ -1,0 +1,54 @@
+#:kivy 1.11.1
+<HomeScreen>:
+    canvas.before:
+        Color:
+            rgb: 0.11, 0.02, 0.11
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    orientation: 'vertical'
+    spacing: 10
+    ActionBar:
+        id: nav_bar
+        name: 'Living Room - Led Strip'
+        ActionView:
+            canvas.before:
+                Color:
+                    rgb: 0.1, 0, 0.1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            use_separator: True
+            ActionPrevious:
+                title: nav_bar.name
+                with_previous: False
+            ActionOverflow:
+            ActionButton:
+                icon: 'icons/settings_icon2.png'
+                hint_size: 0.8
+    ToggleButton:
+        size_hint_x: None
+        size: self.x / 2, 0
+        pos_hint: {'center_x': 0.5}
+        background_normal: 'icons/bulb_off.png'
+        background_down: 'icons/bulb_on.png'
+        on_press: root.power_switch(self)
+    BoxLayout:
+        orientation: 'horizontal'
+        Widget:
+        ColorWheel:
+            id: col_wheel
+            size_hint: 0.8, 1
+            on_color: root.color_changed(self.color[:-1])
+        Widget:
+            canvas.after:
+                Color:
+                    rgb: 0.1, 0.1, 0.1
+                Line:
+                    width: 2
+                    rectangle: self.x + self.width * 2 / 9, self.y + self.height * 2 / 9, self.width / 1.8, self.height / 1.8
+                Color:
+                    rgb: col_wheel.color
+                Rectangle:
+                    size: self.width / 2, self.height / 2
+                    pos: self.x + self.width / 4, self.y + self.height / 4
