@@ -1,7 +1,7 @@
-import gui_control
+import GUI
 
 def main():
     # Start the GUI
-    gui_control.HombroApp().run()
+    GUI.HombroApp().run()
 
 main()

@@ -27,6 +27,7 @@
                 icon: 'icons/settings_icon2.png'
                 hint_size: 0.8
     ToggleButton:
+        name: 'Ledstrip'
         size_hint_x: None
         size: self.x / 2, 0
         pos_hint: {'center_x': 0.5}
@@ -38,8 +39,9 @@
         Widget:
         ColorWheel:
             id: col_wheel
+            name: 'Ledstrip'
             size_hint: 0.8, 1
-            on_color: root.color_changed(self.color[:-1])
+            on_color: root.color_changed(self, self.color[:-1])
         Widget:
             canvas.after:
                 Color:
