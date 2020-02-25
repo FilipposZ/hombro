@@ -1,0 +1,24 @@
+{
+  "presets": {
+    "Chill Mood": [
+      {
+        "color": [0.2, 0, 0.2],
+        "duration": 1
+      },
+      {
+        "color": [0.3, 0, 0.3],
+        "duration": 1
+      },
+      {
+        "color": [0.5, 0.1, 0.5],
+        "duration": 1
+      }
+    ],
+    "Transient Ambiance": [
+      {
+        "color": [1, 0.7, 0.25],
+        "duration": 10
+      }
+    ]
+  }
+}

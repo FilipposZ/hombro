@@ -1,5 +1,7 @@
 #:kivy 1.11.1
 <HomeScreen>:
+    preset_btns: preset_btns
+
     canvas.before:
         Color:
             rgb: 0.11, 0.02, 0.11
@@ -25,32 +27,54 @@
             ActionOverflow:
             ActionButton:
                 icon: 'icons/settings_icon2.png'
-                hint_size: 0.8
+                size_hint: 0.2, 1
+
     ToggleButton:
         name: 'Ledstrip'
-        size_hint_x: None
-        size: self.x / 2, 0
-        pos_hint: {'center_x': 0.5}
-        background_normal: 'icons/bulb_off.png'
-        background_down: 'icons/bulb_on.png'
+        size_hint: None, None
+        size_hint: 0.1, 0.1
+        pos_hint: {'center_x': 0.92}
+        background_normal: 'icons/off_icon.png'
+        background_down: 'icons/on_icon.png'
         on_press: root.power_switch(self)
+
+    GridLayout:
+        id: preset_btns
+        size_hint_y: 0.1
+        cols: 2
+        rows: 2
+        padding: 20, 0
+
     BoxLayout:
         orientation: 'horizontal'
         Widget:
         ColorWheel:
             id: col_wheel
             name: 'Ledstrip'
-            size_hint: 0.8, 1
+            size_hint: 1, 1
             on_color: root.color_changed(self, self.color[:-1])
-        Widget:
-            canvas.after:
-                Color:
-                    rgb: 0.1, 0.1, 0.1
-                Line:
-                    width: 2
-                    rectangle: self.x + self.width * 2 / 9, self.y + self.height * 2 / 9, self.width / 1.8, self.height / 1.8
-                Color:
-                    rgb: col_wheel.color
-                Rectangle:
-                    size: self.width / 2, self.height / 2
-                    pos: self.x + self.width / 4, self.y + self.height / 4
+        BoxLayout:
+            orientation: 'vertical'
+            Widget:
+                canvas.after:
+                    Color:
+                        rgb: 0.1, 0.1, 0.1
+                    Line:
+                        width: 2
+                        rectangle: self.x + self.width * 2 / 9, self.y + self.height * 2 / 9, self.width / 1.8, self.height / 2.5
+                    Color:
+                        rgb: col_wheel.color
+                    Rectangle:
+                        size: self.width / 2, self.height / 2
+                        pos: self.x + self.width / 4, self.y + self.height / 5
+            FloatInput:
+                size_hint: 0.2, 0.1
+                pos_hint: {'center_x': 0.5}
+                text: root.preset_data['']
+            Button:
+                size_hint: 0.5, 0.3
+                pos_hint: {'center_x': 0.5}
+                text: 'Add color to the current preset'
+                text_size: self.width, None
+                halign: 'center'
+                on_press: root.add_color_to_preset(col_wheel.color)
