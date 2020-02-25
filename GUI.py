@@ -6,7 +6,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.togglebutton import ToggleButton
 from kivy.properties import NumericProperty,ReferenceListProperty,ObjectProperty
-from utilitywidgets import FloatInput
+from utilitywidgets import FloatInput, PresetButton
 import communications
 
 class HomeScreen(BoxLayout):
@@ -20,12 +20,11 @@ class HomeScreen(BoxLayout):
         # For each preset, add to the dictionary preset_params the parameters of the
         # preset and create the corresponding buttons.
         self.preset_data = config['presets']
-        print(self.preset_data)
         for pr_name, params in self.preset_data.items():
-            btn = ToggleButton(text = pr_name, group = 'presets')
-            btn.bind(on_press = self.preset_clicked)
+            btn = PresetButton(text = pr_name, halign = 'center')
+            if pr_name == self.preset_btns.active_btn:
+                btn.state = 'down'
             self.preset_btns.add_widget(btn)
-
 
     def power_switch(self, device):
         if device.state == 'normal':
@@ -36,17 +35,19 @@ class HomeScreen(BoxLayout):
     def color_changed(self, device, rgb_val):
         communications.send(device.name, 'color', str(rgb_val))
 
-    def preset_clicked(self, preset):
-        name = preset.text
-        print(name)
+    def preset_clicked(self, preset_btn):
+        name = preset_btn.text
+        if (preset_btn.state == 'down'):
+            self.preset_btns.active_btn = name
+            print(name)
 
     def add_color_to_preset(self, rgb_val):
         # Find the currently active preset
-        for btn in self.preset_btns.children:
-            if btn.state == 'down':
-                self.preset_data[btn.text].append({'color': rgb_val, 'duration': duration})
 
-                print(self.preset_data[btn.text][-1])
+        pr_name = self.preset_btns.active_btn
+        self.preset_data[pr_name].append({'color': rgb_val, 'duration': 1})
+
+        print(self.preset_data[pr_name][-1])
 
 
 class HombroApp(App):

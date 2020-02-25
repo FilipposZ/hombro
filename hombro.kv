@@ -1,7 +1,12 @@
 #:kivy 1.11.1
+<PresetButton>:
+    size_hint: 0.3, 0.7
+    group: 'preset'
+    on_press: app.root.preset_clicked(self)
+
+
 <HomeScreen>:
     preset_btns: preset_btns
-
     canvas.before:
         Color:
             rgb: 0.11, 0.02, 0.11
@@ -28,22 +33,29 @@
             ActionButton:
                 icon: 'icons/settings_icon2.png'
                 size_hint: 0.2, 1
+                on_press:
+                    self.background_color = (0.4, 0.2, 0.4, 1)
 
     ToggleButton:
         name: 'Ledstrip'
-        size_hint: None, None
         size_hint: 0.1, 0.1
-        pos_hint: {'center_x': 0.92}
+        pos_hint: {'center_x': 0.5}
         background_normal: 'icons/off_icon.png'
         background_down: 'icons/on_icon.png'
         on_press: root.power_switch(self)
 
-    GridLayout:
-        id: preset_btns
-        size_hint_y: 0.1
-        cols: 2
-        rows: 2
+    BoxLayout:
+        orientation: 'horizontal'
         padding: 20, 0
+        size_hint_y: 0.1
+        StackLayout:
+            orientation: 'lr-tb'
+            id: preset_btns
+            active_btn: 'MonoColor'
+        Button:
+            pos_hint: {'top': 1}
+            size_hint: 0.2, 0.7
+            text: 'Add Preset'
 
     BoxLayout:
         orientation: 'horizontal'
@@ -67,10 +79,7 @@
                     Rectangle:
                         size: self.width / 2, self.height / 2
                         pos: self.x + self.width / 4, self.y + self.height / 5
-            FloatInput:
-                size_hint: 0.2, 0.1
-                pos_hint: {'center_x': 0.5}
-                text: root.preset_data['']
+
             Button:
                 size_hint: 0.5, 0.3
                 pos_hint: {'center_x': 0.5}

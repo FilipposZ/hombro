@@ -1,5 +1,11 @@
 from kivy.uix.textinput import TextInput
+from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.button import Button
 import re
+
+class PresetButton(ToggleButton):
+    pass
+
 
 class FloatInput(TextInput):
 
