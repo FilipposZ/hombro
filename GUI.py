@@ -42,8 +42,7 @@ class HomeScreen(BoxLayout):
             print(name)
 
     def add_color_to_preset(self, rgb_val):
-        # Find the currently active preset
-
+        # Adds the currently selected color to the active preset.
         pr_name = self.preset_btns.active_btn
         self.preset_data[pr_name].append({'color': rgb_val, 'duration': 1})
 
