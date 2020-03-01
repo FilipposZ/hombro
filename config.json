@@ -1,30 +1,55 @@
 {
-  "presets": {
-    "MonoColor": [
-      {
-        "color": [0.2, 0, 0.2],
-        "duration": 1
-      }
-    ],
-    "Chill Mood": [
-      {
-        "color": [0.2, 0, 0.2],
-        "duration": 1
+  "devices": [
+    {
+      "name": "Ledstrip - LivingRoom",
+      "type": "ledstrip",
+      "default_preset": "MonoColor",
+      "host_name": "pi",
+      "host_ip": "192.168.1.10",
+      "power": "False",
+      "pins": {
+        "R": 17,
+        "G": 22,
+        "B": 24
       },
-      {
-        "color": [0.3, 0, 0.3],
-        "duration": 1
-      },
-      {
-        "color": [0.5, 0.1, 0.5],
-        "duration": 1
+      "presets": {
+        "MonoColor": [
+          {
+            "color": [0.2, 0, 0.2],
+            "duration": 1
+          }
+        ],
+        "Chill Mood": [
+          {
+            "color": [0.2, 0, 0.2],
+            "duration": 1
+          },
+          {
+            "color": [0.3, 0, 0.3],
+            "duration": 1
+          },
+          {
+            "color": [0.5, 0.1, 0.5],
+            "duration": 1
+          }
+        ],
+        "Transient Ambiance": [
+          {
+            "color": [1, 0.7, 0.25],
+            "duration": 10
+          }
+        ]
       }
-    ],
-    "Transient Ambiance": [
-      {
-        "color": [1, 0.7, 0.25],
-        "duration": 10
+    },
+    {
+      "name": "Lamp - LivingRoom",
+      "type": "switch",
+      "host_name": "esp",
+      "host_ip": "192.168.1.11",
+      "power": "False",
+      "pins": {
+        "power": 4
       }
-    ]
-  }
+    }
+  ]
 }
