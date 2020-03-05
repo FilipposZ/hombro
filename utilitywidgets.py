@@ -7,6 +7,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.widget import Widget
 from kivy.uix.modalview import ModalView
 from kivy.uix.label import Label
+from kivy.app import App
 
 import re
 
@@ -42,9 +43,18 @@ class OverlayView(ModalView):
     def __init__(self, devices, **kwargs):
         super().__init__(**kwargs)
         for device in devices:
-            # For each device add an instance to the dropdown list
+            # For each device add the button to the list
             btn = DeviceButton(text = device['name'])
+            btn.bind(on_press = self.dismiss)
             self.device_btns.add_widget(btn)
+
+        self.app = App.get_running_app()
+
+    def on_pre_open(self):
+        for btn in self.device_btns.walk(restrict = True):
+            if type(btn) == DeviceButton and self.app.manager.selected_device == btn.text:
+                btn.state = 'down'
+
 
 
 class NavigationBar(BoxLayout):
