@@ -1,0 +1,208 @@
+#:kivy 1.11.1
+<PresetButton>:
+    group: 'preset'
+    size_hint: 0.25, 0.2
+    always_release: True
+    background_color: (1, 1, 1, 1) if self.state == 'normal' else (0.35, 0.54, 0.35, 1)
+    on_press:
+        self.state = 'down' if self.state == 'normal' else 'down'
+
+<DeviceButton>
+    size_hint: (0.8, 0.1)
+    pos_hint: {'center_x': 0.5}
+    group: 'device'
+    background_color: (0, 0, 0, 0)
+    bold: True if self.state == 'down' else False
+    underline: True if self.state == 'down' else False
+    color: (0.35, 0.54, 0.35, 1) if self.state == 'down' else (1, 1, 1, 1)
+    on_press:
+        self.state = 'down' if self.state == 'normal' else 'down'
+        app.manager.selected_device = self.text
+        app.manager.current = self.text
+
+<Separator>:
+    size_hint_y: None
+    height: dp(2)
+    size_hint_x: 0.8
+    pos_hint: {'center_x': 0.5}
+    color: 1, 1, 1, 1
+    canvas:
+        Color:
+            rgba: self.color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<OverlayView>:
+    size_hint: (0.25, 1)
+    pos_hint: {'x': 0}
+    device_btns: device_btns
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Devices'
+            size_hint: 0.8, 0.2
+            pos_hint: {'center_x': 0.5}
+            bold: True
+        Separator:
+            color: 0.65, 0.69, 0.88, 1
+        BoxLayout:
+            id: device_btns
+            orientation: 'vertical'
+            size_hint: 0.8, 0.6
+            pos_hint: {'center_x': 0.5}
+        Separator:
+            color: 0.65, 0.69, 0.88, 1
+        Button:
+            size_hint: 0.8, 0.2
+            pos_hint: {'center_x': 0.5}
+            text: 'Add new Device'
+            italic: True
+            background_color: (0, 0, 0, 0)
+            color: (0.35, 0.54, 0.35, 1) if self.state == 'down' else (1, 1, 1, 1)
+            on_press: print('Adding new device')
+
+
+<NavigationBar>:
+    overlay_btn: overlay_btn
+    devices: app.manager.devices
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: dp(80)
+    padding: 20, 0
+    canvas.before:
+        Color:
+            rgb: 0.1, 0, 0.1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    Button:
+        id: overlay_btn
+        background_normal: 'icons/app_icon.png'
+        background_down: 'icons/app_icon.png'
+        size_hint_x: 0.20
+        always_release: True
+        on_press: root.overlay.open()
+    Label:
+        pos_hint: {'center_x': 0.5}
+        text: app.manager.selected_device
+        bold: True
+    Button:
+        background_normal: 'icons/settings_icon2.png'
+        background_down: 'icons/settings_icon2.png'
+        background_color: (1, 1, 1, 1) if self.state == 'normal' else (0.35, 0.54, 0.35, 1)
+        size_hint: 0.15, 0.9
+        pos_hint: {'center_y': 0.5}
+        always_release: True
+
+<BaseScreen@BoxLayout>:
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgb: 0.11, 0.02, 0.11
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: dp(10)
+        NavigationBar:
+        ToggleButton:
+            id: power_btn
+            size_hint: 0.1, 0.06
+            pos_hint: {'right': 0.96}
+            background_normal: 'icons/off_icon.png'
+            background_down: 'icons/on_icon.png'
+            always_release: True
+            on_press: root.parent.power_switch(self, app.manager.selected_device)
+
+
+<LedstripScreen>:
+    preset_btns: preset_btns
+    BaseScreen:
+        Widget:
+        BoxLayout:
+            orientation: 'horizontal'
+            Button:
+                size_hint: 0.15, 0.4
+                background_color: (1,1,1, 1) if self.state == 'normal' else (0.35, 0.54, 0.35, 1)
+                background_normal: 'icons/plus_icon.png'
+                background_down: 'icons/plus_icon.png'
+                pos_hint: {'center_y': 0.3}
+            Label:
+                text: 'Presets'
+                italic: True
+                pos_hint: {'center_y': 0.3}
+            Button:
+                size_hint: 0.2, 0.5
+                text: 'Edit'
+                valign: 'bottom'
+                color: 0, 0, 0, 1
+                bold: True
+                pos_hint: {'center_y': 0.3}
+                background_color: (1, 1, 1, 1) if self.state == 'normal' else (0.35, 0.54, 0.35, 1)
+                background_normal: 'icons/arrow_icon.png'
+                background_down: 'icons/arrow_icon.png'
+                on_release:
+                    root.switch_to_preset_edit(self, app.manager)
+        StackLayout:
+            orientation: 'lr-tb'
+            id: preset_btns
+
+
+        BoxLayout:
+            orientation: 'horizontal'
+            Widget:
+            ColorWheel:
+                id: col_wheel
+                size_hint: 1, 1
+                on_color: root.color_changed(self, app.manager.selected_device, self.color[:-1])
+            BoxLayout:
+                orientation: 'vertical'
+                Widget:
+                    canvas.after:
+                        Color:
+                            rgb: 0.1, 0.1, 0.1
+                        Line:
+                            width: 2
+                            rectangle: self.x + self.width * 2 / 9, self.y + self.height * 2 / 9, self.width / 1.8, self.height / 2.5
+                        Color:
+                            rgb: col_wheel.color
+                        Rectangle:
+                            size: self.width / 2, self.height / 2
+                            pos: self.x + self.width / 4, self.y + self.height / 5
+
+                # Button:
+                #     size_hint: 0.5, 0.2
+                #     pos_hint: {'center_x': 0.5}
+                #     text: 'Add color to the current preset'
+                #     text_size: self.width, None
+                #     halign: 'center'
+                #     on_press: root.add_color_to_preset(col_wheel.color)
+
+<SwitchScreen>:
+    BaseScreen:
+        Widget:
+        Widget:
+        Widget:
+
+
+<PresetEditScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgb: 0.11, 0.02, 0.11
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        NavigationBar:
+        PageLayout:
+            size_hint_y: 0.2
+            Label:
+                text: root.active_preset
+            Label:
+                text: 'Another'
+            Label:
+                text: 'ThisOne'
+        Widget:

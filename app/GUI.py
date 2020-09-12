@@ -12,15 +12,16 @@ from kivy.uix.togglebutton import ToggleButton
 from kivy.properties import DictProperty, ListProperty,ObjectProperty, StringProperty
 from kivy.uix.screenmanager import ScreenManager, Screen, WipeTransition
 from utilitywidgets import FloatInput, PresetButton
-import communications
+from communications import Transceiver
 
+tr = Transceiver('192.168.1.10', 1883)
 
 class BasicDevice():
     def power_switch(self, btn, name):
         if btn.state == 'normal':
-            communications.send(name, 'power', 'off')
+            tr.send(name, 'power', 'off')
         elif btn.state == 'down':
-            communications.send(name, 'power', 'on')
+            tr.send(name, 'power', 'on')
 
 
 class LedstripScreen(Screen, BasicDevice):
@@ -43,12 +44,12 @@ class LedstripScreen(Screen, BasicDevice):
             self.preset_btns.add_widget(btn)
 
     def color_changed(self, instance, name, rgb_val):
-        communications.send(name, 'color', str(rgb_val))
+        tr.send(name, 'color', str(rgb_val))
 
     def change_active_preset(self, preset_btn):
         if (preset_btn.state == 'down'):
             self.active_preset = preset_btn.text
-            communications.send(self.name, 'mode', self.active_preset)
+            tr.send(self.name, 'mode', self.active_preset)
 
     def add_color_to_preset(self, rgb_val):
         # Adds the currently selected color to the active preset.
@@ -88,15 +89,20 @@ class ScreenController(ScreenManager):
 
     def __init__(self, config, **kwargs):
         super().__init__(**kwargs)
-        self.devices = config['devices']
+        self.devices = config['devices'] # The available devices
         self.selected_device = self.devices[0]['name']
 
 
 class HombroApp(App):
 
     def build(self):
-        config = communications.config
+        # Read the configuration file
+        with open('config.json') as config_file:
+            config = json.load(config_file)
+
         self.icon = 'icons/app_icon.png' # Set the logo of the app
+
+        # Create the screen manager
         self.manager = ScreenController(config, transition = WipeTransition())
         for device in self.manager.devices:
             # For each device create a screen and add it to the screen controller
@@ -105,9 +111,13 @@ class HombroApp(App):
             elif device['type'] == 'switch':
                 self.manager.add_widget(SwitchScreen(device, name = device['name']))
 
+            # Inform the hosts of the hardware connected.
+            tr.send(device['name'], 'config', str(device))
+
+        # Set the current screen
         self.manager.current = self.manager.selected_device
         return self.manager
 
 
     def on_stop(self):
-        communications.stop_coms()
+        tr.stop_coms()
