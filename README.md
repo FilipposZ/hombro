@@ -1,2 +1,4 @@
 # hombro
-An application to control a SMD5050 ledstrip. The application communicates through MQTT protocol with a RaspberryPi, which controls the ledstrip through 3 NPN transistors.
+A desktop application to control an SMD5050 ledstrip. 
+
+The app communicates through MQTT protocol with a RaspberryPi, which controls the ledstrip through 3 NPN transistors.
